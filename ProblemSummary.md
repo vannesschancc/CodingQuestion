@@ -2,7 +2,8 @@ Table of Content
 ================
 
 * [Table of Contents](#table-of-contens)
-* [Array](#array)
+* [Array](#Array)
+    * [Points to think](#Points\ to\ think)
     * [Two Pointer Problem](#Pointer\ Problems)
         * [Read/Write](#Read-Write\ Pointer)
         * [Same Direction](#Same\ Direction\ Pointer)
@@ -35,6 +36,8 @@ Table of Content
 * [Queue](#Queue)
     * [MonoQueue](#MonoQueue)
     * [QueueToStack](#Queue\ To\ Stack)
+    * [Queue\ Implementation](#Queue\ Implmentation)
+    * [Details\ Queue](#Queue\ Details) 
 * [Heap](#Heap) 
     * [Stream](#Stream)
         * [Something in Stream](#Something\ in\ Stream)
@@ -50,6 +53,7 @@ Table of Content
     * [Interval DP](#Interval\ DP)
     * [Two-D DP](#Two\ Dimension\ DP)
     * [One-D DP](#One\ Dimension\ DP)
+
 * [Greedy](#Greedy)
     * [Interval](#Interval)
 
@@ -73,6 +77,7 @@ Table of Content
         * [Fast/Slow](#Fast\ Slow\ Pointer)
         * [Operation](#LinkedList\ Operation)
         * [DummyNode](#Dummy\ Node)
+    
 
 
 * [Tree](#Tree)
@@ -90,12 +95,9 @@ Table of Content
         * [Subset](#Subset)
         * [PalindromPartition](#PalindromPartition)
         * [Remove Duplicate](#Remove\ Duplicate)
-        * [Matrix DFS](#Matrix\ DFS)
-            * [Matrix Trick](#Matrix\ Trick)
+    * [Matrix DFS](#Matrix\ DFS)
+        * [Matrix Trick](#Matrix\ Trick)
 * [BFS](#BFS) 
-    * [Queue](#Queue)
-        * [Queue\ Implementation](#Queue\ Implmentation)
-        * [Details\ Queue](#Queue\ Details) 
     * [When to use](#When\ to\ Use\ BFS)
     * [What to solve](#What\ to\ Solve\ BFS)
     * [Key Point](#BFS\ Key\ Point)
@@ -103,7 +105,7 @@ Table of Content
     * [Template](#Trie\ Template)
     * [Prefix](#Trie)
     * [AutoComplete](#Auto\ Complete)
-* [Bit Manipulation](#Bit\ Hack)
+* [Bit Manipulation](#Bit\ Manipulation)
     * [Find Missing Number](#Find\ Missing\ Number)
 * [UnionFind](#Union\ Find)
     * [Template](#Union\ Find\ Template)
@@ -207,11 +209,11 @@ class Solution {
             
             e.g. s = "applepenapple", wordDict = ["apple", "pen"]
             
-            wb("leetcode") = wb("") && inDicr("leetcode")
-                          || wb("l") && inDicr("eetcode")
-                          || wb("le") && inDicr("etcode")
-                          || wb("lee") && inDicr("tcode")
-                          || wb("leet") && inDicr("code")
+            wb("leetcode") = wb("") && inDict("leetcode")
+                          || wb("l") && inDict("eetcode")
+                          || wb("le") && inDict("etcode")
+                          || wb("lee") && inDict("tcode")
+                          || wb("leet") && inDict("code")
           wb("leet") = wb("") && inDicr("leet") -> return true
                     || wb("l") && inDicr("eet")
             
@@ -236,13 +238,83 @@ class Solution {
 ```
 
 
+# Array
+## Points to think
+- Observation: 
+    - Sorted: Use pointers (same dir or opposite dir)
+    - Unsorted: Use some kind of collections of data structure (set, map, stack, queue)
+- "Missing Number in Continous Problem": 
+    - Use sum array formula  
+    - (1 + n) * n / 2 
+
+- Tricks for traversaling substring
+    - Use len from 1 to len(string) as outerloop 
+    - Use (i = 0; i < len(string) && i < i + len; i++)
+    - 
+- Dragger/Markget Technique
+    -  "Drag" method, one move, the other one does not, or both move, 
+    - normally the slow one is used as `Marker` for comparison and etc
+    - If the fast one (read) is good for some condicion, the slow and fast are aligned, (slow = fast) or the slow one is increment
 
 
+- Update first or modify first? 
+```java
+    /*
+        Modify first, based on pre
+    */
+    int curState; 
+    for (int i = 0; i < arr.length; i++) {
+        compute based on curState()
+        update preState to next state()
+    }
+
+    /*
+        update first, compute on the current state
+
+    */
+
+    int preState; 
+    for (int i = 0; i < arr.length; i++) {
+        update preState to current state()
+        compute based on current s  tate()
+       
+    }
+```
+
+- Check Boundary 
+    - Any time you read based on idx, check the boundary
+    - while loop ends at the `1st` that fail to meet the condition
+```java
+   static String compressString(String str) {
+        if (str == null || str.length() == 0) return str;
+
+        StringBuilder sb = new StringBuilder();
+        int idx = 0;
+        while (idx < str.length()) {
+            int count = 1;
+            while (idx + 1 < str.length() && str.charAt(idx) == str.charAt(idx + 1)) {
+                count++;
+                idx++;
+            }
+
+            sb.append(str.charAt(idx)).append(count);
+            idx++;
+        }
+
+        return sb.toString();
+    }      
+```
 ## Pointer Problems
-
+- Same Direction 
+    - Fast and Slow
+    - Windows Problem
+- 
 ### Read-Write Pointer
 1. Read and Write Pointer -> ` In place replacement, remove duplicated`
     - If you found the undesired number, keep the write pointer here, until you read a valid one, replace it, then increment write
+
+    - Normailly, the problem comes with some kind of `Parititioning`
+    
 ``` java
 /*
 给一个inputintegerarray,remove掉其中evenindice上的evennumber. e.g.{0,1,2,3,5}=>{1,3,5}  
@@ -374,6 +446,10 @@ class Solution {
     Input: [0,1,0,3,12]
     Output: [1,3,12,0,0]
 
+            [1, 3, 12, 0, 0]
+        r    0  1  2  3   4 
+        w    0  1  2  3
+
 */
 
 public void moveZeroes(int[] nums) {
@@ -391,8 +467,10 @@ public void moveZeroes(int[] nums) {
 
 ```
 # Same Direction Pointer
+- Daggling Model
+    1. One stops due to certain condiction
 
-- Usage: 
+- Example: 
     1. Merge Two Array / LinedList 
     2. Intersection of two arrays <- Select this alternatively
     3. Sum of two large number 
@@ -613,6 +691,10 @@ class Solution {
 ### Fast-Slow Pointer
 - 两根指针一前一后，直到前面的指针走过头
 - TC: O(n)
+- Usage: 
+    - Get in the middle of the ll
+    - get the kth from the tail of the ll 
+    - Check Cycle
 
 ```Java 
 
@@ -640,8 +722,9 @@ public class Solution {
 
 ```
 ### Other Same Direction 
-
+- Fancy trick in LinkedList, connected one tail to the head of the other linkedlist 
 ```java
+
 /*
     Other Same Direction, 
     When shorter list is done, connect it to the head of the longer one 
@@ -664,11 +747,55 @@ public class Solution {
     }
 }
 ```
+
+
+
+### Opposite Direction 
+- Usege:
+    - N - SUM 
+    - Palindrome 
+
+# String
+## Substring Problem
+Problems:
+    if goes up tp input.length() insteaf of input.length()-1
+    leftStr = input.substring(0, input.length()) -> entire String 
+    if this is in recursion ,it cased stackoverflow  
+    
+```java
+        for (int i = 0; i < input.length()-1; i++) {
+            String leftStr = input.substring(0,i+1); 
+            String rightStr = input.substring(i+1);
+            List<String> leftRes = helper(leftStr, map, numCharMap);
+            List<String> rightRes = helper(rightStr, map, numCharMap);
+            for (String left : leftRes) {
+                for (String right : rightRes) {
+                    set.add(left + right); 
+                }
+            }
+        }
+```
+
+- Validate two string , return true 
+```java
+String t and Strign s 
+        if (s == null || t == null) {
+            return s == t;
+        }
+```
+
+
+
 # Binary Search
 - Reason
     - Shrink the range of search
     - Need sorted before pefroming operation 
     - Use template lp + 1
+
+- `Conclusion:` 
+    - use (lp + 1 < rp) { lp = mid}
+    - use (lp <= rp) {lp = mid -1}
+
 
 ```java
     Arrays.sort(nums);
@@ -693,7 +820,7 @@ public class Solution {
     }
 
 ```
-
+### Binary Search Traps
 ```java
     /*
     why not use (lp < rp)
@@ -859,14 +986,18 @@ public int search(int[] nums, int target) {
 ```
 
 ### First and Last Position in Binary Search 
-
+- Find First: nums[mid] >= target {rp = mid} else {lp = mid}; 
+- Find Last: nums[mid] <= target {lp = mid} else {rp = mid};
 ### Min Max in Rotate Sorted Search 
+- Min: find nums[mid-1] > nums[mid] && nums[mid + 1] > nums[mid]
+- Max: find nums[mid-1] < nums[mid] && nums[mid + 1] < nums[mid]
 
-If there is no duplication, think of them as
-- Find Min == finding the first one that is less than the end of the rotated array, e.g. nums[nums.length-1]
+
+- If there is no duplication, think of them as
+    - Find Min == finding the first one that is less than the end of the rotated array, e.g. nums[nums.length-1]
            == find the fistst element that is smaller than start of the rotated array, e.g. nums[nums[0]]
                 (`Note: this required checking if the array is sorted or rotated sorted, if it is sorted, this cannot find the answer`)
-- Find Max == Find the last number that is larger than the start of the rotated array, e.g. nums[nums[0]]
+    - Find Max == Find the last number that is larger than the start of the rotated array, e.g. nums[nums[0]]
            == Find the first number that is larger than start part of the rotation
 ```java
 
@@ -1123,7 +1254,31 @@ class Solution {
 }
 
 ```
-## Common API
+# Greedy 
+## Interval 
+Idea: Greedy 
+- whether a meeting can start without overlapping is depend on the `Earliest` ending root
+
+- Normally, 
+    1. sort the intervals by `start time`, 
+    2. keep track of an `endTime` to keep track of the `earliest end time`
+    3. Use an `startTime` with `endTime` to keep track of the interval `ahead` of the current visiting interval
+
+- if the start time of `current interval` is less than the endTime, 
+    - update the endTime to max (endTime, current.end)
+- else 
+    - update the start time to start time of `current interval`
+    - update the end time to end time of the `current interval`
+
+- Examples:
+    - Merge Intervals
+    - Find non-overlap Intervals 
+    - Meeting Rooms 
+    - Find empty subinterval within a large interval 
+    - Insert Interval
+
+
+# Common API
 ### String API
 - Methods: (str <- instance, String <- class)
 	1. String[] lists = str. split(RegEx regEx) 
@@ -1143,36 +1298,6 @@ class Solution {
 - Storing String
     1. array of 26 Characters(Letters Only)
     2. array of 256 Characters(ASCII )
-
-#### Substring Problem
-Problems:
-    if goes up tp input.length() insteaf of input.length()-1
-    leftStr = input.substring(0, input.length()) -> entire String 
-    if this is in recursion ,it cased stackoverflow  
-```java
-        for (int i = 0; i < input.length()-1; i++) {
-            String leftStr = input.substring(0,i+1); 
-            String rightStr = input.substring(i+1);
-            List<String> leftRes = helper(leftStr, map, numCharMap);
-            List<String> rightRes = helper(rightStr, map, numCharMap);
-            for (String left : leftRes) {
-                for (String right : rightRes) {
-                    set.add(left + right); 
-                }
-            }
-        }
-```
-
-
-
-- Validate two string , return true 
-```java
-String t and Strign s 
-        if (s == null || t == null) {
-            return s == t;
-        }
-```
-
 
 ### Set Api
 - Methods 
@@ -1197,10 +1322,6 @@ String t and Strign s
 - Methods 
     - Arrays.sort()
     - Arrays.fill()
-
-
-
-
 
 # DFS 
 ## DFS Combination Base
@@ -1343,6 +1464,7 @@ Output:
       / \    /  \      /\   /\
     2[] [3] [2] [2.3] 
 */
+
 class Solution {
     public List<List<Integer>> subsets(int[] nums) {
         List<List<Integer>> lists = new ArrayList<>();
@@ -1450,21 +1572,251 @@ private void backtrack(List<List<Integer>> list, List<Integer> tempList, int [] 
     ["aa","b"],
     ["a","a","b"]
     ]
-
-
 */  
 
 ```
 
 
-### Iterative Traversal
-```Java
-    /*
-        In Order Iterative Traversal 
-    */
+### Matrix DFS
+- Matrix/2D dfs 
+    - Check boundary inBound()
+    - marked visited[m][n] <- m = row, n = col
+```java
+/*
 
+Each dfs, recording the start point
+has the  xDiff (col - startCol) and yDiff (row - startRow) using 
+2 * (yDiff) * colLen + xDiff, as the  yDiff can be positive and negative, times 2 will help prevent mapping to the same indexx 
+
+*/
+class Solution {
+    int[] dy = new int[]{0, 0, 1,-1};
+    int[] dx = new int[]{1, -1, 0,0};
+    
+    public int numDistinctIslands(int[][] grid) {
+        
+        if (grid == null || grid.length == 0) {
+            return 0; 
+        }
+        
+        
+        if (grid[0] == null || grid[0].length == 0) {
+            return 0 ;
+        }
+        
+        int m = grid.length; 
+        int n = grid[0].length; 
+        boolean[][] visited = new boolean[m][n];
+        Set<Integer> shape = new HashSet<>(); 
+        Set<Set<Integer>> shapes = new HashSet<>(); 
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (visited[i][j] || grid[i][j] == 0) continue; 
+                shape = new HashSet<>();
+                dfs(i, j, i,j,grid, visited, shape); 
+                shapes.add(shape);
+            }
+        }
+        
+        return shapes.size(); 
+    }
+    
+    private void dfs(int row, int col, int sRow, int sCol, int [][] grid, boolean[][] visited, Set<Integer> shape) {
+        /*
+        if (!inBound(row, col, grid) || visited[row][col] || grid[row][col] == 0){
+            return; 
+        } 
+        */
+        visited[row][col] = true;
+        shape.add(2 * (row - sRow) * grid[0].length + (col - sCol));
+        for (int i = 0; i < dx.length; i++) {
+            int xDiff = dx[i];
+            int yDiff = dy[i];
+            int xNext = col + xDiff;
+            int yNext = row + yDiff;
+            
+            if (!inBound(yNext, xNext, grid) || visited[yNext][xNext] || grid[yNext][xNext] == 0) {
+                continue;
+            } 
+            
+            dfs(row + yDiff, col + xDiff, sRow, sCol, grid, visited, shape);
+        }
+    }
+    
+    private boolean inBound(int row, int col, int[][] grid) {
+        int m = grid.length;
+        int n = grid[0].length; 
+        
+        return (row >= 0 && row < m) && (col >= 0 && col < n);
+    }
+}
+```
+# Tree
+### Level Order Traversal
+- SC: O(1) with pointers to next leve l
+- SC: O(n) with Queue
+
+```java
+    /*
+        LC 117
+    */
+    public class Solution {
+    public void connect(TreeLinkNode root) {
+        if (root == null) {
+            return; 
+        }
+        
+        //same level 
+        while (root != null) {
+            //pointers for next level 
+            TreeLinkNode nextDummy = new TreeLinkNode(-1); 
+            TreeLinkNode nextPtr = nextDummy; 
+            
+            //Traverse in the same level 
+            while (root != null) {
+                if (root.left != null) {
+                    nextPtr.next = root.left; 
+                    nextPtr = nextPtr.next; 
+                }
+                
+                if (root.right != null) {
+                    nextPtr.next = root.right; 
+                    nextPtr = nextPtr.next; 
+                }
+                
+                root = root.next; 
+            }
+            
+            root = nextDummy.next; 
+        }
+    }
+
+    /*
+
+    */
+}
+```
+### Iterative Traversal
+- in a binary search tree (BST), use a stack for iterative traveral, 
+- `For the current root`, The next smallest number is on top of stack 
+
+```Java
+
+/**
+ * Your BSTIterator will be called like this:
+ * BSTIterator i = new BSTIterator(root);
+ * while (i.hasNext()) v[f()] = i.next();
+ */
+
+    /**
+ * Definition for binary tree
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+
+public class BSTIterator {
+    TreeNode curr; 
+    Stack<TreeNode>stack;
+    public BSTIterator(TreeNode root) {
+        curr = root; 
+        stack = new Stack<>(); 
+    }
+
+    /** @return whether we have a next smallest number */
+    public boolean hasNext() {
+        if (!stack.isEmpty() || curr != null) {
+            return true;
+        }
+        return false; 
+    }
+
+    /** @return the next smallest number */
+
+    //
+    public int next() {
+        //in order traversal 
+        while (curr != null) {
+            stack.push(curr);
+            curr = curr.left; 
+        }
+        
+        curr = stack.pop(); 
+        int val = curr.val; 
+        curr = curr.right; 
+        return val;
+    }
+}
+
+/*
+    In Order Iterative Traversal 
+*/
+
+ public List<Integer> inorderTraversal(TreeNode root) {
+        List<Integer> list = new ArrayList<>();
+        if (root == null) {
+            return list;
+        }
+        
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode current = root; 
+        while (current != null || !stack.isEmpty()) {
+            //push left child to the stack
+            while (current != null) {
+                stack.push(current); 
+                current = current.left; 
+            }
+            
+            //all the left child are in stack, check the root 
+            current = stack.pop();
+            list.add(current.val); 
+            current = current.right; 
+        }
+        
+        return list;
+    }
+
+/*
+    Pre order Iterative 
+*/
+
+class Solution {
+    public List<Integer> preorderTraversal(TreeNode root) {
+        Stack<TreeNode> stack = new Stack<>(); 
+        List<Integer> list = new ArrayList<>();
+        if (root == null) {
+            return list; 
+        }
+        
+        stack.push(root); 
+        while (!stack.isEmpty()) {
+            TreeNode current = stack.pop();
+            list.add(current.val); 
+            if (current.right != null) {
+                stack.push(current.right); 
+            }
+            
+            if (current.left != null) {
+                stack.push(current.left);
+            }
+        }
+        
+        return list; 
+    }
+}
 
 ```
+### Divide and Conquer
+- Think of it as post - order 
+- Return result during the traversaling (post order)
+- result can be wrapper in ResultType class for more information
+
+```java
+```
+
 
 
 ## Trie
@@ -1562,9 +1914,13 @@ If you want to use a pair as key, for numebrs, e.g. (1,2) as key, mapping to som
 
 ```java
     dp[1][2] = 2;
+    
 ```
 
+Hashing the relative location based on matrix[i][j]
+```java
 
+```
 ## BFS 
 ### When to Use BFS
 
@@ -1604,14 +1960,15 @@ If you want to use a pair as key, for numebrs, e.g. (1,2) as key, mapping to som
 - Usage:    
     - 求任意1个拓扑序(Topological Order)
         - DFS (one node with 0 indegree is provided, nothing else)
-        - BFS
+        - BFS (with Queue and `known graph (known indegree)`)
     - 问是否存在拓扑序(是否可以被拓扑排序) <- (Check size of tological sort vs # of vertice)
     - 求所有的拓扑序 
         (Needs DFS)
     - 求是否存在且仅存在一个拓扑序 (Queue中最多同时只有1个节点) 
 
 - Implementation:
-    - 
+    - BFS with Queue and known graph (known indegree and outdegree)
+    - DFS with explicit stack `Once all the nodes are visited, then put the curren node to stack`, print the stack in `REVERSE` order
 
 - Course Schedule <- Kahm's Algo 
     - Example of testing if it is topological sortable
@@ -1660,6 +2017,16 @@ If you want to use a pair as key, for numebrs, e.g. (1,2) as key, mapping to som
 
 
 # Stack 
+- Usage 
+    - Parsing / Decoding / Calculator 
+    - Tempory Storage 
+    -   MonoStack
+    - Recursive to Iterative
+    - Reverse
+
+- Implementation
+    - LinkedList
+
 ## Parsing 
 ```Java
 /*
@@ -1700,6 +2067,47 @@ class Solution {
 
 ```
 
+## MonoStack
+Idea: 
+- Use a stack to store the `previous` information
+- The stack will be an increasing or decresing sequence (monotone)
+- e.g. a decreasing monostack <- Whenever you see a number larger than top of the stack, pop the stack until top of the stack is less than current number 
+
+```java
+class Solution {
+    public int[] nextGreaterElement(int[] findNums, int[] nums) {
+        Stack<Integer> stack = new Stack<>();
+        Map<Integer, Integer> map = new HashMap<>();
+        int[] res = new int[findNums.length]; 
+        for (int i = 0; i < nums.length; i++) {
+            //pop any number that is less than the current nums; 
+            while (!stack.isEmpty() && nums[i] > stack.peek()) {
+                map.put(stack.pop(), nums[i]); 
+            }
+            
+            stack.push(nums[i]); 
+        }
+        
+        for (int i = 0; i < findNums.length;i++) {
+            res[i] = map.getOrDefault(findNums[i], -1); 
+        }
+        
+        return res; 
+    }
+}
+
+```
+
+# Queue
+## Queue Problem
+    - Windows 
+    - BFS
+    - Level Order Traversal
+    - Mono Queue
+
+## Queue Implmentation
+## Queue Details
+
 # Heap
 
 ## When to use Heap
@@ -1712,10 +2120,48 @@ class Solution {
 exmaple: Stream problem 
 ```java
 
-
-
 ```
+
+# LinkedList
+- Type:
+    1. Singly
+    2. Doubly
+
+- Pros and Cons: 
+    1. Doubly can delete much easier, as `prev` pointer is built in 
+    2. Singly needs a prev pointer to delete 
+
+- Common Problems;
+    1. Delete Cycle I and II
+    2. Intersection of nodes 
+    3. Combo with Hashmap for fast retrieve 
+
+## Doubly Linked List
+- insert
+- Delete 
+- Searchg
+- Change
+
 # Bit Manipulation 
+
+### Bit Hacks
+- Bit OR |, AND &, XOR ^
+- Bit shift: <<, >>; the result of shift has to be stored : a = a >> 1;
+- A << 1: binary of A shifted left for 1 bit, which result in value x 2
+- A >> 1: divide by integer 2. Note: decimals are ignored in the result.
+- bit shift is a lot faster than reqular 'times' operation.
+- 32 bit number: leading bit = 1, negative numbjer; leading bit = 0, positive number.
+- '>>' add leading '1' if the 32 bit number originally has leading '1'.
+- Java/python: logical shift >>>, always add leading '0' regardless of the sign of the 32-bit number. That is, it may turn a negative number to positive, if the leading bit is originally '1'
+- Because with '( )', make sure to surround the desired operation
+    & 0000 = clean up; | ABC = assign ABC
+- A^B=C, then A = B^C
+- bits可以用来表示不同的状态, 比如2bit可以表示4种状态: 00, 01, 10, 11
+- Math.pow(2, h) = 2 << (h - 1); 2 << 1就是把所有bits往左移动一位, 也就是 * 2
+- Also, 1 << h = 2 ^ h; 1 << h 就是 2 * 2 * 2* ....乘h次.
+- bit operation should be in parentheses
+
+## Bit Example
 ### Find the missing number 
 One bit hack is XOR, assuming the A3 is missing 
     target = 0 ^ A1 ^ A2 ^ A3
@@ -1754,6 +2200,7 @@ class Solution {
     public int hammingWeight(int n) {
         int count = 0;
         while (n != 0) {
+            //check state
             count += n & 1; 
             n = n >>> 1; //unsigned 
                         //signed shift 
@@ -1761,6 +2208,76 @@ class Solution {
         }
         return count; 
     }
+```
+
+# Recursion 
+## Recursing scenario 
+- Key Point: Same problem happens recursively, normally dynamic
+    - Pointers + recursion 
+
+    
+``` java
+/*
+    字符消消乐，删除3个及以上的连续字符。​ "aabbbbac" -> "c", "aaabb" -> "bb" 可以用 stack 解决，也可用指针 recursion 做。
+
+    
+    aa(bbbb)ac -> aaac -> c 
+
+    TC: O(n^2) => T(n) = T(n-3) + O(n)
+    SC: O(1) heap, O(n) stack
+*/
+public class RemoveThree {
+    public static String removeConsecutive(String s)            
+        for (int i=0,j=0; j<s.length(); j++) {
+            // increment j until we sedifferent char
+            if (s.charAt(i) == s.charAt(j)) continue;
+            // delete the repeatsequence with more than3 chars
+            if (j-i >= 3) {
+                    return removeConsecutive(s.substring(0,i)+s.substring(j));
+            }
+            else {
+                    // search repetitfor a new cha
+                    i = j;
+            }
+        }
+        return s;
+    }
+
+    /*
+        Use Stack
+        TC: O(n)
+        SC: O(n) heap
+    */
+
+    public static String removeConsecutiveStack(String s) {
+        Stack<Character> stack = new Stack<>(); 
+        
+        for (int i = 0; i < s.length(); i++) {
+            char ch = s.charAt(i);
+            if (stack.size() < 2) {
+                stack.push(ch); 
+                continue; 
+            }
+
+            char prev = stack.pop();
+            char prevPrev = stack.pop();
+            if (ch == prev && ch == prevPrev) {
+                continue; 
+            }
+            stack.push(prevPrev);
+            stack.push(prev);
+            stack.push(char); 
+        }
+
+        StringBuilder sb = new StringBuilder(); 
+        while (!stack.isEmpty()) {
+            sb.append(stack.pop()); 
+        }
+
+        return sb.reverse().toString(); 
+    }    
+}
+
 ```
 
 
