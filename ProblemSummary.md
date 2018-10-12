@@ -43,6 +43,7 @@ Table of Content
         * [Something in Stream](#Something\ in\ Stream)
 
 * [DP](#DP)
+    * [Type](#Type)
     * [Identify](#判断)
     * [Types of Problems](#步骤)
     * [Steps:](#Steps)
@@ -119,12 +120,28 @@ Table of Content
 
 
 # DP
+## Type
+### Interval DP
+### Backpage DP
+### Memo DP
+### Matching DP 
+### Space Optimization
+### How to select dimension of DP ? 
+- The dimention is determined by the limiting condiction, for example: 
+    - K Sum, use three dimension
+    - 0-1 backpack, use two dimension with dummy
+    - Matching, two dimension with dummy 
+    -  
+
+
+
+
 ## 判断
 - count: Calculate how many, 
 - min / max 
 - Possiblity, and / or / true / false 
 - from recursive to dp, from bottom up to top down 
-- `Under lots of senario, top-down DFS + memp = bottom-up DP`
+- `Under lots of senario, top-down DFS + memo = bottom-up DP`
 
 ## 步骤:
 - 确定状态
@@ -1277,7 +1294,9 @@ Idea: Greedy
     - Find empty subinterval within a large interval 
     - Insert Interval
 
-
+# Follow-Up Trick
+- Prefix Sum 
+    - Subarray Sum
 # Common API
 ### String API
 - Methods: (str <- instance, String <- class)
