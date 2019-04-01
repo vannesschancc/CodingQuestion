@@ -73,7 +73,7 @@ Table of Content
     * [Distance](#Distance)
         * [Optimal Distance](#Optimal\ Distance)
 
-* [LinedList](#LinkedList)
+* [LinkedList](#LinkedList)
     * [Common Technique](#Common\ Technique)
         * [Fast/Slow](#Fast\ Slow\ Pointer)
         * [Operation](#LinkedList\ Operation)
@@ -82,10 +82,17 @@ Table of Content
 
 
 * [Tree](#Tree)
-    * [Tree Traversal](#Tree\ Traversal)
+    * [Generation](#Tree\ Generation)
+    * [Search](#Tree\ Generation)
+    * [Path](#Path)
+    * [Property](#Property)
+    * [BST](#Binary\ Search\ Tree)
+    * [Traversal](#Tree\ Traversal)
         * [Recursive](#Recursive\ Traversal)
         * [Iterative](#Iterative\ Traversal)
-    * [Divide and Conqueuer](#Divide\ and\ Conquer)
+        * [Level](#Level\ Order\ Traversal)
+    * [DivideAndConqueuer](#Divide\ and\ Conquer)
+    * [HybridMethod](#Hybrid)
 * [DFS](#DFS)
     * [Combination Base](#DFS\ Combination\ Base)
     * [Permutation Base](#DFS\ Permutation\ Base)
@@ -131,7 +138,6 @@ Table of Content
     - K Sum, use three dimension
     - 0-1 backpack, use two dimension with dummy
     - Matching, two dimension with dummy 
-    -  
 
 
 
@@ -163,8 +169,7 @@ Table of Content
 
 #### 计算顺序
 - 递推: 从小到大, 从 dp[0], dp[1] 开始
-- 记忆化: 从大到小, 先算一遍 dp[n-1]
-
+- 记忆化: 从大到小, 先算一遍 dp[n-1], 然后记录下来
 
 ## 基本原理
 - 加法原理 -> 无重复，无泄漏
@@ -231,11 +236,13 @@ class Solution {
                           || wb("le") && inDict("etcode")
                           || wb("lee") && inDict("tcode")
                           || wb("leet") && inDict("code")
+
           wb("leet") = wb("") && inDicr("leet") -> return true
                     || wb("l") && inDicr("eet")
-            
         */
         boolean[] dp = new boolean[s.length() + 1];
+        //init: ""empty string is always the in the dict
+        //dp[0] -> empty string is a solution in wordDict
         dp[0] = true;
         for (int len = 1; len <= s.length(); len++) {
             for (int i = 0; i < len; i++) {
@@ -268,11 +275,10 @@ class Solution {
     - Use len from 1 to len(string) as outerloop 
     - Use (i = 0; i < len(string) && i < i + len; i++)
     - 
-- Dragger/Markget Technique
+- Dragger/Marker Technique
     -  "Drag" method, one move, the other one does not, or both move, 
     - normally the slow one is used as `Marker` for comparison and etc
-    - If the fast one (read) is good for some condicion, the slow and fast are aligned, (slow = fast) or the slow one is increment
-
+    - If the fast one (read) is good for some condicion, the slow and fast are aligned, (slow = fast) or the slow one is increment depending a certain conditions
 
 - Update first or modify first? 
 ```java
@@ -293,9 +299,19 @@ class Solution {
     int preState; 
     for (int i = 0; i < arr.length; i++) {
         update preState to current state()
-        compute based on current s  tate()
-       
+        compute based on current s sate()
     }
+
+    /*
+        Be careful about the indexes ofstart and end 
+        a)if needs comparing with the previous -> start: 1, 
+        end: len(arr) - 1
+        b)if needs comparing with the next one -> start at 0, 
+        end: len(arr) - 2
+    */
+
+
+
 ```
 
 - Check Boundary 
@@ -469,6 +485,8 @@ class Solution {
 
 */
 
+
+
 public void moveZeroes(int[] nums) {
         int write = 0; 
         for (int read = 0; read < nums.length; read++) {
@@ -552,6 +570,7 @@ public class Solution {
 /*
     Merge Two Sorted Array, In-place 
     Use three pointer, i -> i arr, j-> j arr, k -> sum arr
+    nums2 is longer than nums1
 */
 
 class Solution {
@@ -713,27 +732,36 @@ class Solution {
     - get the kth from the tail of the ll 
     - Check Cycle
 
+### Check Cycle
 ```Java 
 
 /*
 Check if there is cycle 
+    fast -> hop 2 step
+    slow -> hop 1 step
+
+    check: fast.next != null && fast.next.next != null
 */ 
 
 
 
 
 public class Solution {
-    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
-        if (headA == null || headB == null) return null;         
-        ListNode ptrA = headA; 
-        ListNode ptrB = headB; 
+    public boolean hasCycle(ListNode head) {
+        if (head == null) return false; 
         
-        while (ptrA != ptrB) {
-            ptrA = (ptrA == null) ? headB : ptrA.next; 
-            ptrB = (ptrB == null) ? headA : ptrB.next; 
+        ListNode slow = head;
+        ListNode fast = head; 
+        
+        while (fast.next != null && fast.next.next!= null) {
+            slow = slow.next;
+            fast = fast.next.next; 
+            if(slow == fast) return true; 
         }
         
-        return ptrA; 
+        
+        return false; 
+        
     }
 }
 
@@ -775,9 +803,9 @@ public class Solution {
 # String
 ## Substring Problem
 Problems:
-    if goes up tp input.length() insteaf of input.length()-1
+    if goes up tp input.length() instead of input.length()-1
     leftStr = input.substring(0, input.length()) -> entire String 
-    if this is in recursion ,it cased stackoverflow  
+    if this is in recursion ,it caused stackoverflow  
     
 ```java
         for (int i = 0; i < input.length()-1; i++) {
@@ -795,7 +823,7 @@ Problems:
 
 - Validate two string , return true 
 ```java
-String t and Strign s 
+String t and String s 
         if (s == null || t == null) {
             return s == t;
         }
@@ -817,7 +845,8 @@ String t and Strign s
 ```java
     Arrays.sort(nums);
     while (lp + 1 < rp) {
-        int mid = lp + (rp - lp) / 2; //Prevent integer overflow 
+        //Prevent integer overflow 
+        int mid = lp + (rp - lp) / 2; 
         if (nums[mid] < target) {
             lp = mid;
         } else if (nums[mid] > target) {
@@ -1114,6 +1143,48 @@ class Solution {
 
 ### N sum problem 
 
+Three sum problems, 
+- Sort first, 
+- Use two pointer to find the sum from the rest of the array to calculate the sum 
+
+How to remove the duplicate??
+- Sort first, so that the smallest number of triplet is is always in the front 
+- To remove duplicate -> make sure that triplet did not start with the `same smallest number`, thats why you see `if (i >0 && nums[i] == nums[i-1]) continue;` in outer for loop 
+- Within the two sum for loop, do the same thing for left pointer and right pointer, so that the `'min' value (pointer by lp)`  and the `'max' value` will not be the same for other tuples. 
+
+```java
+/*
+    TC: O(n^2)
+    SC: O(1)
+*/
+class Solution {
+    public List<List<Integer>> threeSum(int[] nums) {
+        Arrays.sort(nums); 
+        List<List<Integer>> res = new ArrayList<>();
+        for (int i = 0; i < nums.length - 2; i++) {
+            if (i >0 && nums[i] == nums[i-1]) continue;
+            int lp = i + 1; 
+            int rp = nums.length - 1; 
+            int sum = - nums[i];
+            while (lp < rp) {
+                if (nums[lp] + nums[rp] == sum) {
+                    res.add(Arrays.asList(nums[i], nums[lp], nums[rp]));
+                    //move the pointer the last one of the duplicated valie
+                    while (lp < rp && nums[lp] == nums[lp+1]) lp++;
+                    while (lp < rp && nums[rp] == nums[rp-1]) rp--;
+                    lp++; 
+                    rp--; 
+                } else if (nums[lp] + nums[rp] < sum) {
+                    lp++;
+                } else {
+                    rp--; 
+                }
+            }
+        }
+        return res;
+    }
+}
+```
 ### Fast Slow Pointer
 1. Determine whether LL has cycle 
 2. Find the point where LL cycle starts/ Find Missing Number 
@@ -1210,8 +1281,14 @@ class Solution {
 Basic Idea: 
     1. Add one 
     2. Subtract one 
+Useage: 
+    1. Window [e.g. same size]
+    2. Dynamic Size [e.g. log file]
 
-
+Implementation 
+    1. queue
+    2. list + map 
+    3. 
 ```java
 /*
     Given a string, find the length of the longest substring without repeating characters.
@@ -1235,17 +1312,14 @@ Basic Idea:
     Explanation: The answer is "wke", with the length of 3. 
                 Note that the answer must be a substring, "pwke" is a subsequence
     
-*/
-
-/*
     Solution: 
     Use two pointer i and j, i = left side of the window, 
     j = right of window 
 
-    use one j for entire iteration of i , use hashmap or array to store the char seen by j, if repeated occur, stop the current i, and remove the current i 
-
-    noticed that if duplicated happended, the i (the leftmost char pointed by i) will be the first duplicate, this can be proved by contradicion 
+    use one j for entire iteration of i , use hashmap or array to store the char seen by j, if repeated occur, stop the current i, and remove the current i noticed that if duplicated happended, the i (the leftmost char pointed by i) will be the first duplicate, this can be proved by contradicion
 */
+
+ 
 
 class Solution {
     public int lengthOfLongestSubstring(String s) {
@@ -1270,12 +1344,73 @@ class Solution {
     }
 }
 
+
+/*
+Design a hit counter which counts the number of hits received in the past 5 minutes.
+
+Each function accepts a timestamp parameter (in seconds granularity) and you may assume that calls are being made to the system in chronological order (ie, the timestamp is monotonically increasing). You may assume that the earliest timestamp starts at 1.
+
+It is possible that several hits arrive roughly at the same time.
+
+
+Solution: Very Similar to Window problems, use queue to maintain such thay 
+    the current time as input - the top of the queue is < 300
+
+    intput (time)
+    while (!queue.isEmpty && time - queue.peek() <= 300) {
+        queue.pop(); 
+    }
+*/
+
+class HitCounter {
+    Queue<Integer> queue; 
+    /** Initialize your data structure here. */
+    public HitCounter() {
+        queue = new LinkedList<>(); 
+    }
+    
+    /** Record a hit.
+        @param timestamp - The current timestamp (in seconds granularity). */
+    public void hit(int timestamp) {
+        queue.offer(timestamp); 
+    }
+    
+    /** Return the number of hits in the past 5 minutes.
+        @param timestamp - The current timestamp (in seconds granularity). */
+    public int getHits(int timestamp) {
+        while (!queue.isEmpty() && timestamp - queue.peek() >=300) {
+            queue.poll(); 
+        }
+        /*
+            queue: 1, 2, 3, 300, 
+        */
+        return queue.size(); 
+    }
+}
+
 ```
 # Greedy 
+## Sweep Line 
+
 ## Interval 
 Idea: Greedy 
-- whether a meeting can start without overlapping is depend on the `Earliest` ending root
+- Whether a meeting can start without overlapping is depend on the `Earliest` ending root
 
+Tricks: 
+- Normally, start with sorting by the start time 
+- Sort by the end time if it is necessary, 
+- Always keep track of the `current earliest end time`, this can be done by pre-sort the array by end time 
+- 
+
+Swipe Line: 
+- Use a line, denoting as t, to swipe through the intervals.
+- Pre-sort the start time and end time 
+- e.g. Counting the number of airplance in the air,  
+
+Example: 
+
+
+Merge Interval Steps: 
 - Normally, 
     1. sort the intervals by `start time`, 
     2. keep track of an `endTime` to keep track of the `earliest end time`
@@ -1287,12 +1422,31 @@ Idea: Greedy
     - update the start time to start time of `current interval`
     - update the end time to end time of the `current interval`
 
+Meeting Room: 
+- Keep track of `the earliest ended idx` of the meeting room, the next meeeting will always look for the earliest ending idx of the meeting room. 
+
+- Increment number of room when a meeting starts， decrement when the meeting ends (`Sweep line`)
+
+
+
 - Examples:
     - Merge Intervals
     - Find non-overlap Intervals 
     - Meeting Rooms 
     - Find empty subinterval within a large interval 
     - Insert Interval
+
+
+- Follow up: 
+    - Output all the meeting
+
+- Tips and Trikcs:
+    - When you sorted the array, the orig index is lost, wrap this point in a class with val and orig idx, sort the new class 
+
+    - Wrap some data into a class, e.g. i nnumber of airline, wrap time and on(True) and time (off) in a class 
+
+    - write comparator for custom class 
+    - `TreeMap` for dynamic adding, the key could be start time 
 
 # Follow-Up Trick
 - Prefix Sum 
@@ -1363,6 +1517,11 @@ Idea: Greedy
 2. W Duplicated
 ```java
 //W/O duplicated
+
+/*
+    Permutation: 
+    def: the permutation starting with current set 
+*/
 class Solution {
     public List<List<Integer>> permute(int[] nums) {
         List<List<Integer>> lists = new ArrayList<>(); 
@@ -1380,6 +1539,7 @@ class Solution {
             lists.add(new ArrayList<Integer>(set)); 
             return; 
         }
+        
         
         for (int i = 0; i < nums.length; i++)  {
             if (set.contains(nums[i])) continue; 
@@ -1427,6 +1587,7 @@ public class Solution {
     }
 
     public void dfs(int[] nums, boolean[] used, List<Integer> list, List<List<Integer>> res){
+        //base case
         if(list.size()==nums.length){
             res.add(new ArrayList<Integer>(list));
             return;
@@ -1799,7 +1960,7 @@ public class BSTIterator {
     }
 
 /*
-    Pre order Iterative 
+    Pre-order Iterative 
 */
 
 class Solution {
@@ -2091,7 +2252,8 @@ Idea:
 - Use a stack to store the `previous` information
 - The stack will be an increasing or decresing sequence (monotone)
 - e.g. a decreasing monostack <- Whenever you see a number larger than top of the stack, pop the stack until top of the stack is less than current number 
-
+- Next Greater <- mono descrement stack 
+- Next Smaller <- mono increment stack\ 
 ```java
 class Solution {
     public int[] nextGreaterElement(int[] findNums, int[] nums) {
