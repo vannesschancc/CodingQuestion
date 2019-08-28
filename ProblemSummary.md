@@ -14,8 +14,9 @@ Table of Content
              * [Palindrome](#Palindrome)
              * [N Sum Problem](#N-Sum-Problem)
              * [Reverse String](#Reverse-String)
-             * [Partition](#Partion-Array  )
+             
         * [Other](#Other-Pointer)
+            * [Partition](#Partition)
             * [Rainbow Sort](#Rainbow-Sort)
             * [Two Dimension Traversal](#Two-Dimension-Traversal)
     * [Matrix](#Matrix)
@@ -73,12 +74,12 @@ Table of Content
     * [Distance](#Distance)
         * [Optimal Distance](#Optimal-Distance)
 
-* [LinkedList](#LinkedList)
+* [LinkedList](#Linked\List)
     * [Common Technique](#Common-Technique)
         * [Fast/Slow](#Fast-Slow-Pointer)
         * [Operation](#LinkedList-Operation)
         * [DummyNode](#Dummy-Node)
-    
+    * [Reverse a LinkedList](#Reverse-a-LinkedList)
 * [Tree](#Tree)
     * [Generation](#Tree-Generation)
     * [Search](#Tree-Generation)
@@ -115,6 +116,10 @@ Table of Content
     * [Find Missing Number](#Find-Missing-Number)
 * [UnionFind](#Union-Find)
     * [Template](#Union-Find-Template)
+
+* [Sort](#Sort)
+    * [QuickSelect](#Quick-Select)
+    
 * [Common Api](#Common-API)
     * [String](#String-API)
         * [Substring Problem](#Substring-Problem)
@@ -414,6 +419,10 @@ class Solution {
     }
 }
 
+/*
+    
+
+*/
 
 //LC 80 
 /*
@@ -1138,6 +1147,85 @@ class Solution {
 
 ```
 
+### KClosest 
+
+Given a sorted array, two integers k and x, find the k closest elements to x in the array. The result should also be sorted in ascending order. If there is a tie, the smaller elements are always preferred. 
+
+
+```java
+public class KClosest {
+    public int[] KClosest(int[] array, int target, int k) {
+        if (array == null || array.length == 0) {
+            return array;
+        }
+        
+        //Boundary, k = 0;
+        if (k == 0) {
+            return new int[0]; 
+        }   
+
+        int left =largestSmallerEqual(array, target);
+        int right = left + 1; 
+        int[] result = new int[k];
+
+        for (int i = 0; i < k; i++) {
+            /*
+                1. Moving left
+                    a. right is out of bound
+                    b. left and right is in bound, left is closer 
+                2. Moving right 
+                `   similar to above 
+            */
+            if(right >= array.length || left >= 0 && target - array[left] <= arrary[right] - left) {
+                result[i] = array[left--]; 
+            } else {
+                result[i] = array[right++];
+            }           
+        }
+        
+    }
+
+    private int largestSmallerEqual(int[] array, int target) {
+        int left = 0; 
+        int right = array.lengh - 1; 
+
+        while (left + 1 < right) {
+            int mid = left + (right - left) / 2;
+            //left stops at target,  
+            if (array[mid] <= target) {
+                left = mid; 
+            } else {
+                right = mid; 
+            }
+        }
+
+        //post processing, return right first 
+
+        if (array[right] <= target) {
+            return right; 
+        }
+
+        //post processing, return left later 
+        if (array[left] <= target) {
+            return left;
+        }
+
+        //The target is smaller than the smallest number
+        return -1;
+    }
+
+
+
+    }
+    
+}
+```
+
+
+
+### Binary Search for Interval
+
+
 
 ### N sum problem 
 
@@ -1387,6 +1475,53 @@ class HitCounter {
 }
 
 ```
+
+# Other Pointer
+## Partition
+### QuickSortt 
+```java
+public class QuickSort {
+    public int[] sortArray(int[] nums) {
+        //wrapper call workfunction quicksort
+        sortArray(nums, 0, nums.length-1);
+        return nums;
+    }
+    public void sortArray(int[]nums, int left, int right){
+        //base case
+        if(left>=right){
+            return ;
+        }
+
+        //recursion rule
+        Random rand= new Random();
+        int pivotIndex= left+rand.nextInt(right-left+1);
+        swap(nums, pivotIndex, right);
+        int l=left; int r= right-1;
+
+        while(l<=r){
+            //the pivot is located at right
+            if(nums[l]<=nums[right]){
+                l++;
+            }else {
+                swap(nums, r, l);
+                r--;}
+        }
+        swap(nums, l, right);
+        sortArray(nums, left, l-1);
+        sortArray(nums, l+1, right);
+    }
+
+    public void swap(int[] nums, int i, int j){
+        int tmp = nums[i];
+        nums[i]=nums[j];
+        nums[j]=tmp;
+    }
+}
+
+
+```
+
+### Sort Color
 # Greedy 
 ## Sweep Line 
 
@@ -2128,8 +2263,12 @@ Hashing the relative location based on matrix[i][j]
 - Level order ?? <- If yes, then get the size, and do 
     
     ```java
-        for (int i = 0; i < queue.size(); i++) {
+        while (queue.size() != 0) {
+            //traverse the current layer
+            int size = queue.size() 
+            for (int i = 0; i < size; i++) {
 
+            }
         }
     ```
 ### Topo Sort 
@@ -2315,12 +2454,70 @@ exmaple: Stream problem
     2. Intersection of nodes 
     3. Combo with Hashmap for fast retrieve 
 
-## Doubly Linked List
+### Doubly LinkedList
 - insert
 - Delete 
 - Searchg
 - Change
+### Reverse a LinkedList
+3 ways to reverse a linkedlist
+```java
 
+public void reverse (ListNode head) {
+        ListNode prev = null; 
+        //start reversing using 
+        //reversing 1->2->null
+        while (head != null) {
+                //move pointer to 2
+                ListNode next = head.next;
+                //reverse the pointer to previous node
+                head.next = prev;  
+                //move pre to current 
+                prev = head; 
+                //move current pos to next
+                head = next;
+        }
+}
+
+/*
+Insert the node In the front, after the dummy node, do it iteratively
+*/
+public ListNode reverse(ListNode head) {
+	ListNode dummy = new ListNode(-1); 
+	dummy.next = head; 
+	ListNode current = head; 
+	ListNode next; 
+	while(current.next != null) {
+		next = current.next; 
+		//insert current between next and next.next
+		current.next =  next.next; 
+		//insert next to tail of the dummy 
+		next.next = dummy.next; 
+		dummy.next = next; 
+	}
+}
+
+/*  
+    Do reverse recursively 
+*/
+public ListNode reverseLinkedList (ListNode head) {
+	if (head == null || head.next == null) {
+		return head;
+	}
+	
+	//go to the last nod, then return
+	ListNode nextNode = reverseLinkedList(head.next); 
+	//reverse the pointer from head -> next to next-> head 
+	head.next.next = head;
+	hext.next = null;
+	//notice you return nextNode as the new head; (the last element) 
+	return nextNode;  
+}
+
+
+
+
+```
 # Bit Manipulation 
 
 ### Bit Hacks

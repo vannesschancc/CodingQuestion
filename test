@@ -1,0 +1,264 @@
+
+# Remove a certain letter
+     0  1 2 3 4 5 6 7 , remove(u and n)
+     s  t d e t n n u  
+i               ^
+j                     ^
+i: slow(write) -> 5
+j: fast(read) -> 8
+//delete (5) -> stdet
+
+String remove
+
+# Remove Space 
+    0 1 2 3 4 5 6 7 8
+    a b c _ d e _ _ 
+r                   ^
+w                 ^
+
+
+w = 7, w - 1 = 6 
+
+new String(array, 0, 6)
+[0,5]
+
+= abc_de
+
+        0 1 2
+        a _
+   r        ^
+   w        ^
+
+   w = 2, w - 1 = 1 
+   [0,0] -> a 
+
+
+
+ arr {a,b,c,d,e}
+          ^
+ stk {a,b}
+
+# Remove Duplicate 
+inp = {a, b, b,b,b, a,z, w} => {z,w}
+inp    a, b, b, b, b, a, z, w
+                              ^    
+stack {z,w}
+
+# Substring finding
+
+method 1 O(n^2)
+text:    a b c d e input
+pattern: c d e window 
+     
+ outer 
+     a b c d e 
+i    ^
+i    0 
+     ^
+temp 0 
+
+inner
+    |c d e|       
+j    ^
+j    0       
+
+i = 2 
+    j = {0,1,2}
+    i + 0, i + 1, i + 2 => {2, 3, 4}
+
+for (int i = 0; i < s1.size() - s2.size(); i++) {
+    // scope of var i is outer for loop 
+    int j = 0;
+    for (; j < s2.size(); j++) {
+        // scope of var j is outer for loop 
+    }
+}
+
+
+|                   |
+                 |  |
+method 2 O(m-n) RP Algo
+text:    a b c d e 
+pattern: c d e -> hash(cde)
+
+        a b c d e , len = n
+        |a b c| -> hash (abc), len = m 
+           |b c d| -> hash (bcd)
+              |c d e| -> hash(cde)
+             
+
+
+# Reverse String (reverse characters)
+text:    a b c d e  => e d c b a 
+         e d c b a   
+i            ^
+j            ^
+
+
+# Reverse String in recursive
+text:   a b c d e  => e d c b a
+        problem reverse (a b c d e) = e + sub(reverse(bcd)) + a
+
+
+
+
+inp a - - - - - - - - - - - - - - 
+    a - => post process => a
+
+    a b c _
+r           ^   
+w           ^
+
+w = 4, left of w is abc_
+
+
+# right shift
+n = 2
+abcdef  >> 2 = efabcd 
+
+method1
+reverse last n => abcd fe 
+reverse 0 to len - n => dcba fe
+reverse all => ef abcd
+
+method2
+reverse all => fedcba
+reverse first n => ef dcba 
+reverse  n to len => ef abcds
+
+abcd fe 
+dcba fe
+ef abcd 
+
+
+# String replacement
+
+rep = "xx"
+inp = "babcab"
+pat = "abc"
+
+    "babcab"
+f       ^
+
+# abcd1234
+a1b2d3d4 
+
+ab 21dc 34 
+ab 12cd 34
+
+# Bit Setter to 1
+Set var a 's kth bit to 1 
+a = a | (1 << k)
+k = 3 
+     a = xxxx xxxx 
+1 << k = 0000 1000
+         xxxx 1xxx
+
+# Bit Getter 
+get var a 's kth bit
+(x >> k) & 1
+
+# Bit Setter to 0 
+Set var a 's kth bit to 0
+
+a = a & (~(1 << k))
+         a = xxxx xxxx 
+    1 << k = 0000 1000
+ ~(1 << k) = 1111 0111
+             xxxx 0xxx
+
+# count 1 
+count number of 1 bits in an integer named n
+
+n = 0111 0101 => 5 
+res = 0 
+
+1 = 0000 0001
+a = 0111 0101 
+    0000 0001 =>  
+
+
+
+# String Permutation with Duplication 
+input = a1 a2 b 
+idx 0             sp( {a1 a2 b}, 0)
+                hm{}
+            a1 /       a2|    \b 
+        a1(sp({a1a2b}, 1)
+        hm{a1}
+            /a2
+        a1(a2sp{b})
+        hm{a2}
+
+
+# Slide Window 
+Given a string, find the length of the longest substring without repeating characters.
+
+Input: "abcabcbb"
+Output: 3 
+Explanation: The answer is "abc", with the length of 3. 
+
+/*
+    hashmap: record frequency of each char within the window 
+    left : left side of the window 
+    right: right side of the window 
+        0 1 2 3 4 5 6 7
+        a b c a' b' c b b
+l:            ^
+r:               ^
+map:{c:1, a':1, b':1}
+len: 3
+    //iterate with left 
+    for (int left = 0;left < inp.length(); left++) {
+        //expand the window with right 
+    }
+
+*/
+
+
+
+
+
+class Solution {
+    public int lengthOfLongestSubstring(String s) {
+        if (s == null || s.length() == 0) {
+            return 0; 
+        }
+        
+        int right = 0;
+        int[] window = new int[256]; //store the char in the window 
+        int max = 1; 
+        
+        //abcdefg
+        l  ^
+        r        ^
+
+        for (int left = 0; left < s.length(); left++) {
+            while (right < s.length() && window[s.charAt(right)] == 0) {
+                window[s.charAt(right)]++; 
+                max = Math.max(max, right - left + 1); 
+                right++; 
+            }   
+            //remove the duplicate 
+            window[s.charAt(left)] = 0; 
+        }
+        return max; 
+    }
+}
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
