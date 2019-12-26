@@ -120,14 +120,16 @@ Table of Content
 * [Sort](#Sort)
     * [QuickSelect](#Quick-Select)
     
-* [Common Api](#Common-API)
+* [Common Api (Java)](#Common-API)
     * [String](#String-API)
         * [Substring Problem](#Substring-Problem)
     * [Map](#Map-API)
         * [Hash Trick](#Hash-Trick)
     * [Set](#Set-API)
     * [Comparator](#Comparator-API)
-
+* [Knowledge](#Knowledge)
+    * [Heap](#Heap_knowledge)
+    
 
 # DP
 ## Type
@@ -2655,5 +2657,18 @@ public class RemoveThree {
 }
 
 ```
+
+# Sort
+### Quick Select
+
+#### common scenarios
+1. Find the kth smallest / largest element under time complexity of O()
+
+
+'''
+
+
+
+'''
 
 
