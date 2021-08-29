@@ -21,6 +21,7 @@ Table of Content
             * [Two Dimension Traversal](#Two-Dimension-Traversal)
     * [Matrix](#Matrix)
         * [Tricks](#Matrix-Tricks)
+        * [Traversal Sprial](#Matrix-Traveral)
 
 * [Binary Search](#Binary-Search)
     * [Things to Consider](#Binary-Search-Traps) 
@@ -37,8 +38,8 @@ Table of Content
 * [Queue](#Queue)
     * [MonoQueue](#MonoQueue)
     * [QueueToStack](#Queue-To-Stack)
-    * [Queue\ Implementation](#Queue-Implmentation)
-    * [Details\ Queue](#Queue-Details) 
+    * [Queue Implementation](#Queue-Implmentation)
+    * [Details Queue](#Queue-Details) 
 * [Heap](#Heap) 
     * [Stream](#Stream)
         * [Problems in Stream](#Problems-in-Stream)
@@ -84,6 +85,7 @@ Table of Content
     * [Generation](#Tree-Generation)
     * [Search](#Tree-Generation)
     * [Path](#Path)
+        * [Max/Min Path](#Tree-Path)
     * [Property](#Property)
     * [BST](#Binary-Search-Tree)
     * [Traversal](#Tree-Traversal)
@@ -341,7 +343,31 @@ class Solution {
 
         return sb.toString();
     }      
+
 ```
+Python Version
+```python
+    def compress(s): 
+        if not s: return s 
+        res = ''
+
+        idx = 0
+        n = len(s) 
+        while idx < n:
+            count =1 
+            while idx + 1 < len(s) and s[idx] == s[idx+1]:
+                count += 1
+                idx += 1 
+
+            res += s[idx]
+            if count > 1: 
+                res += str(count)
+            
+            idx += 1
+
+        return res 
+```
+
 ## Pointer Problems
 - Same Direction 
     - Fast and Slow
@@ -509,6 +535,100 @@ public void moveZeroes(int[] nums) {
     }
 
 
+```
+
+
+# Quick Select & color sort 
+```Java
+class Solution {
+    public int findKthLargest(int[] nums, int k) {
+        if (nums == null || nums.length == 0) return Integer.MAX_VALUE;
+        return helper(nums, 0, nums.length - 1, k-1); 
+    }
+    
+    private int helper(int[] nums, int start, int end, int k) {
+        if (start > end) return Integer.MAX_VALUE; 
+        
+        int pivot = nums[end];
+        int divider = start; 
+
+        //daggling model
+        for(int i = start; i < end; i++) {
+            if (nums[i] >=pivot) {
+                swap(nums, divider, i); 
+                divider++; 
+            }
+        }
+        
+        //swap the end and the divier 
+        swap(nums,divider, end); 
+        
+        if (divider == k) {
+            return nums[divider]; 
+        }
+        
+        if (divider < k) {
+            return helper(nums, start+1, end, k);
+        } 
+        
+        return helper(nums, start, divider - 1, k);
+    }
+    
+    
+    private void swap(int[] nums, int i, int j) {
+        int tmp = nums[i];
+        nums[i] = nums[j]; 
+        nums[j] = tmp;
+    }
+}
+
+```
+
+Sort Colors
+
+```Python
+class Solution:
+    def sortColors(self, nums: List[int]) -> None:
+        """
+        Do not return anything, modify nums in-place instead.
+        """
+        '''
+            i -> right of 0s 
+            j -> right of 1s
+            k -> left of 2s
+            
+            [0,0,2,1,1,2]
+        i      ^
+        j    ^ 
+        k            ^
+            
+            [0,0,1]
+        i      ^
+        j    ^
+        k         ^
+        
+        '''
+        i = 0 
+        j = 0
+        k = len(nums) - 1
+        while j <= k: 
+            if nums[j] == 0:
+                self.swap(nums, i, j)
+                i += 1
+                j += 1
+                
+            elif nums[j] == 1:
+                j += 1
+                
+            else:
+                self.swap(nums, k, j)    
+                k -= 1
+
+    def swap(self, nums, i, j):
+        temp = nums[i]
+        nums[i] = nums[j]
+        nums[j] = temp
+                
 ```
 # Same Direction Pointer
 - Daggling Model
@@ -850,7 +970,36 @@ String t and String s
     - use (lp + 1 < rp) { lp = mid}
     - use (lp <= rp) {lp = mid -1}
 
+```python
 
+# Recursion 
+def binarySearch (arr, l, r, x): 
+  
+    # Check base case 
+    if r >= l: 
+  
+        mid = l + (r - l) // 2
+  
+        # If element is present at the middle itself 
+        if arr[mid] == x: 
+            return mid 
+          
+        # If element is smaller than mid, then it  
+        # can only be present in left subarray 
+        elif arr[mid] > x: 
+            return binarySearch(arr, l, mid-1, x) 
+  
+        # Else the element can only be present  
+        # in right subarray 
+        else: 
+            return binarySearch(arr, mid + 1, r, x) 
+  
+    else: 
+        # Element is not present in the array 
+        return -1
+```
+
+Iterative Version
 ```java
     Arrays.sort(nums);
     while (lp + 1 < rp) {
@@ -1631,12 +1780,13 @@ Meeting Room:
     - Arrays.sort()
     - Arrays.fill()
 
-# DFS 
-## DFS Combination Base
+# Graph
+## DFS 
+### DFS Combination Base
 - 问题模型:求出所有满足条件的“组合”。 
 - 判断条件:组合中的元素是顺序无关的。 
 - 时间复杂度:与 `2^n` 或者 `n!` 相关
-## DFS Permutation Base
+### DFS Permutation Base
 
 ## Backtrack
 - Core: Add one before next layer of recursion, remove the newly added one after recursion
@@ -1646,8 +1796,37 @@ Meeting Room:
     - Deep Copy 
 - If it is passed by valuem then no need to do so:
     - E.g. integer, string
-
-### Permutation
+### Combination 
+- Combination Sum, each number can used more than once 
+```Python
+#TC: O(n!), SC: O(n)
+class Solution:
+    def combinationSum(self, candidates: List[int], target: int) -> List[List[int]]:
+        res = []
+        cur = []
+        self.dfs(0, target, cur, candidates, res)
+        return res
+    
+    def dfs(self, idx, remain, cur, candidates, res):
+        if remain == 0:
+            res.append(cur.copy())
+            return
+        
+        if remain < 0: 
+            return
+        
+        #start at i 
+        for i in range(idx, len(candidates)): 
+            cur.append(candidates[i])
+            # dfs at i
+            self.dfs(i, remain - candidates[i], cur, candidates,res)
+            cur.pop()
+        
+```
+### Combination Sum II, each number can be used once
+```Python
+```
+### Permutation 
 1. W/O Duplicated
 2. W Duplicated
 ```java
@@ -1675,10 +1854,11 @@ class Solution {
             return; 
         }
         
-        
+        //Start at 0 
         for (int i = 0; i < nums.length; i++)  {
             if (set.contains(nums[i])) continue; 
             set.add(nums[i]);
+            //always start at i
             backtrack(nums,set, lists); 
             set.remove(nums[i]);
         }
@@ -1727,9 +1907,12 @@ public class Solution {
             res.add(new ArrayList<Integer>(list));
             return;
         }
+        //start at 0
         for(int i=0;i<nums.length;i++){
             if(used[i]) continue;
+            //check 0
             if(i>0 &&nums[i-1]==nums[i] && !used[i-1]) continue;
+            //check 
             used[i]=true;
             list.add(nums[i]);
             dfs(nums,used,list,res);
@@ -1862,6 +2045,7 @@ public List<List<Integer>> subsetsWithDup(int[] nums) {
 private void backtrack(List<List<Integer>> list, List<Integer> tempList, int [] nums, int start){
     list.add(new ArrayList<>(tempList));
     for(int i = start; i < nums.length; i++){
+        //!!!! i > start, not just the 0
         if(i > start && nums[i] == nums[i-1]) continue; // skip duplicates
         tempList.add(nums[i]);
         backtrack(list, tempList, nums, i + 1);
@@ -2128,23 +2312,225 @@ class Solution {
 - Think of it as post - order 
 - Return result during the traversaling (post order)
 - result can be wrapper in ResultType class for more information
-
-```java
+```python 
+'''
+    This is extremely helpful in the static typed language such as C++, Java 
+'''
+def maximumAverageSubtree(self, root):
+    self.res = 0
+    def helper(root):
+        if not root: return [0, 0.0]
+        n1, s1 = helper(root.left)
+        n2, s2 = helper(root.right)
+        n = n1 + n2 + 1
+        s = s1 + s2 + root.val
+        self.res = max(self.res, s / n)
+        return [n, s]
+    helper(root)
+    return self.res
 ```
 
+### Tree Path
+- Think of it as post order, get left and right
+- In current node, 
+    - perform comparison
+    - perform necessary computation 
+- Return one of the result
+```
+Given a binary tree, find the length of the longest path where each node in the path has the same value. This path may or may not pass through the root.
+
+The length of path between two nodes is represented by the number of edges between them.
+
+ 
+
+Example 1:
+
+Input:
+
+              5
+             / \
+            4   5
+           / \   \
+          1   1   5
+Output: 2
+
+ 
+
+Example 2:
+
+Input:
+
+              1
+             / \
+            4   5
+           / \   \
+          4   4   5
+Output: 2
+
+```
+```python
+'''
+
+'''
+class Solution:
+    def longestUnivaluePath(self, root: TreeNode) -> int:
+        self.res = 0 
+        self.dfs(root)
+        return self.res 
+    
+    def dfs(self, root: TreeNode) -> int:
+        if not root: return 0
+        left = self.dfs(root.left)
+        right = self.dfs(root.right)
+        left = left + 1 if root.left and root.left.val == root.val else 0
+        right = right + 1 if root.right and root.right.val == root.val else 0
+        self.res = max(self.res, left +right)
+        return max(left,right)
+```
+## Union Find
+### Union Find Template
+```python
+class UnionFind:
+    def __init__(self, size):
+        self.size = size 
+        self.father = [i for i in range(size)]
+        self.count = size 
+    
+    def union(self, my_self, other):
+        root_self = self.find(my_self)
+        other_self = self.find(other)
+        if root_self != other_self:
+            self.father[other_self] = root_self 
+            self.count -= 1
+        
+    
+    def find(self, target):
+        if self.father[target] == target:
+            return target 
+        '''Path Compression'''
+        self.father[target] = self.find(self.father[target])
+        return self.father[target]
+    
+    def get_count(self):
+        return self.count
+    
+class Solution:
+    def countComponents(self, n: int, edges: List[List[int]]) -> int:
+        if not edges:
+            return n 
+        
+        uf = UnionFind(n)
+        
+        for edge in edges:
+            _from = edge[0]
+            _to = edge[1]
+            uf.union(_from,_to)
+    
+        return uf.get_count()
+
+```
+
+```
+'''
+Design a data structure that supports the following two operations:
+
+void addWord(word)
+bool search(word)
+search(word) can search a literal word or a regular expression string containing only letters a-z or .. A . means it can represent any one letter.
+
+Example:
+
+addWord("bad")
+addWord("dad")
+addWord("mad")
+search("pad") -> false
+search("bad") -> true
+search(".ad") -> true
+search("b..") -> true
+
+```
 
 
 ## Trie
 
 ### Trie Template
 
-```java
+```Python
+'''With HashMap'''
+class TrieNode():
+    def __init__(self):
+        self.is_end = False
+        self.children = {}
+        
+class WordDictionary:
 
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        self.root = TrieNode()
+        
+        
+
+    def addWord(self, word: str) -> None:
+        """
+        Adds a word into the data structure.
+        """
+        node = self.root 
+        for ch in word:
+            if ch not in node.children:
+                node.children[ch] = TrieNode()    
+            node = node.children[ch]
+        node.is_end = True
+                
+
+    def search(self, word: str) -> bool:
+        """
+        Returns if the word is in the data structure. A word could contain the dot character '.' to represent any one letter.
+        """
+        node = self.root 
+        return self.dfs(node, word)
+    
+    def dfs(self,root: TrieNode, word:str) -> bool:
+        if not word:
+            if root.is_end:return True 
+            else: return False
+        
+        if word[0] == '.':
+            for nxt in root.children:
+                if self.dfs(root.children[nxt], word[1:]):
+                    return True    
+        
+        if word[0] not in root.children:
+            return False
+        
+        root = root.children[word[0]]
+        return self.dfs(root, word[1:])
+
+# Your WordDictionary object will be instantiated and called as such:
+# obj = WordDictionary()
+# obj.addWord(word)
+# param_2 = obj.search(word)
+
+```
+
+```java
 /*
     The children can be done in HashMap as well. 
     Usually, hashmap is faster if the children is sparse. 
     The array is faster if the array is densed
 */
+
+class TrieNode {
+    boolean isWord = false; 
+    TrieNode[] children  = new TrieNode[26];; 
+    char ch; 
+    TrieNode() {}
+    TrieNode(char ch) {
+        this.ch = ch; 
+        //assuming lower case with 26 chars
+    }
+}
 class Trie {
     TrieNode root; 
     Trie() {
@@ -2164,6 +2550,10 @@ class Trie {
             }
         }
        
+    }
+
+    public TrieNode searchFullString(String str) {
+        
     }
     
     public TrieNode search(String prefix) {
@@ -2189,6 +2579,7 @@ class Trie {
         //preorder traversal 
         return getSuggestionHelper(prefixNode,k, prefix);
     }
+}
 ```
 
 
@@ -2432,6 +2823,7 @@ class Solution {
 
 ## When to use Heap
 - 见到需要维护一个集合的最小值/最大值的时候要想到用堆 (看到Min/Max就要想到heap)
+    - to find max kth, use min heap, if heap size > k, pop one out, 
 - 看到median 想到heap
 - 第k小的元素，Heap用来维护当前候选集合
 - 如果给出的数组没有排序, 先排序, 然后用heap.
@@ -2588,6 +2980,88 @@ class Solution {
     }
 ```
 
+# Matrix
+## Matrix Trick
+```
+Assume matrix is m * n
+you can index each cells from (0, m*n-1)
+cell(i,j) -> idx = i * n + j
+idx(x) => cell( x // m, x % m)
+
+    0 1 2 
+    3 4 5 
+    6 7 8 
+
+    idx(7) => cell(7/3 = 2, 7 % 3 = 1) => cell(2,1)
+```
+## Matrix Traversal
+```python
+'''Iterative method, use two pointers'''
+
+class Solution:
+    def spiralOrder(self, matrix: List[List[int]]) -> List[int]:
+        res = [] 
+        if not matrix: return res 
+        start_row, start_col = 0,0
+        end_row, end_col = len(matrix) - 1, len(matrix[0]) -1 
+        move = 0
+        
+        while start_row <= end_row and start_col <= end_col:
+            if move == 0: #right 
+                for col in range(start_col, end_col + 1):
+                    res.append(matrix[start_row][col])
+                start_row += 1 
+            elif move == 1: #down
+                for row in range(start_row, end_row + 1):
+                    res.append(matrix[row][end_col])
+                end_col -= 1
+            elif move == 2: #left 
+                for col in range(end_col, start_col - 1, -1):
+                    res.append(matrix[end_row][col])
+                end_row -= 1
+            elif move == 3: #up
+                for row in range(end_row, start_row - 1, -1):
+                    res.append(matrix[row][start_col])
+                start_col += 1
+            #change dir 
+            move = (move + 1) % 4
+        return res
+```
+
+```python
+'''recursive order'''
+class SpiralTraversal:
+    def spiral_order(self, matrix):
+        res = []
+        self.recursive_traverse(matrix, 0, len(matrix), res)
+        return res 
+
+    def recursive_traverse(self, matrix, offset, size, res):
+        if size == 0:
+            return 
+        
+        if size == 1: 
+            res.append(matrix[offset][offset])
+            return 
+        
+        for i in range(size-1):
+            res.append(matrix[offset][offset + i])
+
+        for i in range(size-1):
+            res.append(matrix[offset + i][offset + size - 1])
+
+        for i in range(size-1, 0, -1):
+            res.append(matrix[offset + size - 1][offset + i])
+
+        for i in range(size-1, 0, -1):
+            res.append(matrix[offset + i][offset])
+
+        self.recursive_traverse(matrix, offset + 1, size - 2, result)
+        
+``` 
+## Rotate Matrix
+
+
 # Recursion 
 ## Recursing scenario 
 - Key Point: Same problem happens recursively, normally dynamic
@@ -2664,11 +3138,9 @@ public class RemoveThree {
 #### common scenarios
 1. Find the kth smallest / largest element under time complexity of O()
 
-
+'''
 '''
 
 
-
-'''
 
 

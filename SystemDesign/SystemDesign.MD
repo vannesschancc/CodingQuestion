@@ -20,12 +20,13 @@ Table of Content
 # sharding
 - methods
     spliting the database to subsets and each of them only manage a subsets of data, 
-    
+    comman ways:
+        1. split users name by the last name initial: i.e. a-g goes to one shard or use the geographic location (i.e. US sharding, chinese sharding and etc)
 - pros:
     - less trafic (w/r) to a database,
     - less replicatation 
     - more cache hits
-    - 
+    - improve query speed in general
 # Instragram
 ## Instagram Requirement
 Design photo-sharing service like Instagram, where users can upload photos to share them with other users

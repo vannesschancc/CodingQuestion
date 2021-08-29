@@ -1,3 +1,35 @@
+* [Table of Contents](#table-of-contens)
+* [Array](#Array)
+* [Binary Search](#Binary-Search)
+* [Stack](#stack)
+* [Queue](#Queue)
+* [Heap](#Heap) 
+* [Dynamic Programming](#DP)
+    * [LC53. Maximum Subarray](#Maximum-Subarray)
+    * [LC53. Maximum Subarray](#Maximum-Subarray)
+    * [LC53. Maximum Subarray](#Maximum-Subarray)
+    * [LC53. Maximum Subarray](#Maximum-Subarray)
+    * [LC53. Maximum Subarray](#Maximum-Subarray)
+    * [LC53. Maximum Subarray](#Maximum-Subarray)
+
+* [Greedy](#Greedy)
+    * [Interval](#Interval)
+
+* [Graph](#Graph)
+    
+* [LinkedList](#Linked\List)
+* [Tree](#Tree)
+* [DFS](#DFS)
+* [BFS](#BFS) 
+* [Trie](#Trie)
+* [Bit Manipulation](#Bit-Manipulation)
+    * [Find Missing Number](#Find-Missing-Number)
+* [UnionFind](#Union-Find)
+    * [Template](#Union-Find-Template)
+* [Sort](#Sort)
+    * [QuickSelect](#Quick-Select)
+    
+
 # 241. Different Ways to Add Parentheses
 
 Given a string of numbers and operators, return all possible results from computing all the different possible ways to group numbers and operators. The valid operators are +, - and *.
