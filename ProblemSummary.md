@@ -118,9 +118,13 @@ Table of Content
     * [Find Missing Number](#Find-Missing-Number)
 * [UnionFind](#Union-Find)
     * [Template](#Union-Find-Template)
+* [Slide Window](#Knowledge)
+    * [Template](#Slide-Window-Template)
+* [Mono]
 
 * [Sort](#Sort)
     * [QuickSelect](#Quick-Select)
+    * [BucketSort](#Bucket-Sort)
     
 * [Common Api (Java)](#Common-API)
     * [String](#String-API)
